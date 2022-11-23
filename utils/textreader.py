@@ -1,10 +1,11 @@
-patients_text_path = "../assets/text/patients.txt"
-patient_text_path = "../assets/text/patient.txt"
+from config import ROOT_DIR, MAIN_INPUT_DIR, TEXT_DIR
+patients_text_path = ROOT_DIR + MAIN_INPUT_DIR + TEXT_DIR + "/patients.txt"
+patient_text_path = ROOT_DIR + MAIN_INPUT_DIR + TEXT_DIR + "/patient.txt"
 
 
 def get_patient() -> str:
     f = open(patient_text_path)
-    patient = f.readline()
+    patient = f.readline().replace("\n", "")
     return patient
 
 

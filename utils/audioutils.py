@@ -2,11 +2,11 @@ import numpy as np
 import soundfile as sf
 from beans.RawAudio import RawAudio
 
-from configreader import default_audio_samplerate, default_audio_offset, default_audio_duration
+from config import DEFAULT_AUDIO_SAMPLERATE, DEFAULT_AUDIO_OFFSET, DEFAULT_AUDIO_DURATION
 
 
-def load_audio(data_path: str, samplerate=default_audio_samplerate, offset=default_audio_offset,
-               audio_duration=default_audio_duration) -> RawAudio:
+def load_audio(data_path: str, samplerate=DEFAULT_AUDIO_SAMPLERATE, offset=DEFAULT_AUDIO_OFFSET,
+               audio_duration=DEFAULT_AUDIO_DURATION) -> RawAudio:
     result = RawAudio()
     result.load_audio(data_path, samplerate, offset, audio_duration)
     return result
@@ -23,7 +23,7 @@ def add_audio(audio_1: RawAudio, audio_2: RawAudio) -> RawAudio:
     assert audio_1.get_samplerate() == audio_2.get_samplerate(), "The two audio must have the same samplerate"
     result = RawAudio()
     result.assemble_audio(
-        np.concatenate((audio_1.get_audio(), audio_2.get_audio())), audio_1.get_samplerate(), default_audio_offset,
-        default_audio_duration
+        np.concatenate((audio_1.get_audio(), audio_2.get_audio())), audio_1.get_samplerate(), DEFAULT_AUDIO_OFFSET,
+        DEFAULT_AUDIO_DURATION
         )
     return result
