@@ -1,24 +1,29 @@
 import os
-from configparser import ConfigParser
-
-config = ConfigParser()
+import yaml
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) + "/"
-config.read(ROOT_DIR + "/config.ini")
 
-DEFAULT_AUDIO_SAMPLERATE = int(config["AUDIO_SETTINGS"]["DefaultSamplerate"])
-DEFAULT_AUDIO_OFFSET = float(config["AUDIO_SETTINGS"]["DefaultOffset"])
-DEFAULT_AUDIO_DURATION = None
+with open(ROOT_DIR + "config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.SafeLoader)
+    AUDIO_SETTINGS = "audio_settings"
+    DIRECTORY_SETTINGS = "directory_settings"
+    AUDIO_VISUALIZER_SETTINGS = "audio_visualizer_settings"
 
-MAIN_INPUT_DIR = config["DIRECTORY_SETTINGS"]["MainInputDirectory"]
-AUDIO_DIR = config["DIRECTORY_SETTINGS"]["AudioDirectory"]
-TEXT_DIR = config["DIRECTORY_SETTINGS"]["TextDirectory"]
-PATIENTS_DIR = config["DIRECTORY_SETTINGS"]["PatientDirectory"]
-SPLIT_AUDIO_DIR = config["DIRECTORY_SETTINGS"]["SplitAudioDirectory"]
-SPECTRUM_DIR = config["DIRECTORY_SETTINGS"]["SpectrumAudioDirectory"]
-TIME_SERIES_DIR = config["DIRECTORY_SETTINGS"]["TimeSeriesAudioDirectory"]
-MAIN_OUTPUT_DIR = config["DIRECTORY_SETTINGS"]["MainOutputDirectory"]
-MASTER_OUTPUT_DIR = config["DIRECTORY_SETTINGS"]["MasterOutputDirectory"]
+    DEFAULT_AUDIO_SAMPLERATE = config[AUDIO_SETTINGS]["default_samplerate"]
+    DEFAULT_AUDIO_OFFSET = config[AUDIO_SETTINGS]["default_offset"]
+    DEFAULT_AUDIO_DURATION = config[AUDIO_SETTINGS]["default_duration"]
 
-SHOW_TIME_SERIES = True if config["AUDIO_VISUALIZER_SETTINGS"]["TimeSeries"] == "True" else False
-SHOW_FULL_SPECTRUM = True if config["AUDIO_VISUALIZER_SETTINGS"]["FullSpectrum"] == "True" else False
+    MAIN_INPUT_DIR = config[DIRECTORY_SETTINGS]["main_input_directory"]
+    AUDIO_DIR = config[DIRECTORY_SETTINGS]["audio_directory"]
+    TEXT_DIR = config[DIRECTORY_SETTINGS]["text_directory"]
+    PATIENTS_DIR = config[DIRECTORY_SETTINGS]["patient_directory"]
+    SPLIT_AUDIO_DIR = config[DIRECTORY_SETTINGS]["split_audio_directory"]
+    SPECTRUM_DIR = config[DIRECTORY_SETTINGS]["spectrum_audio_directory"]
+    WAVEFORM_DIR = config[DIRECTORY_SETTINGS]["waveform_audio_directory"]
+    MAIN_OUTPUT_DIR = config[DIRECTORY_SETTINGS]["main_output_directory"]
+    MASTER_OUTPUT_DIR = config[DIRECTORY_SETTINGS]["master_output_directory"]
+
+    SHOW_WAVEFORM = config[AUDIO_VISUALIZER_SETTINGS]["waveform"]
+    SHOW_SPECTRUM = config[AUDIO_VISUALIZER_SETTINGS]["spectrum"]
+    SHOW_MELSPECTROGRAM = config[AUDIO_VISUALIZER_SETTINGS]["mel_spectrogram"]
+

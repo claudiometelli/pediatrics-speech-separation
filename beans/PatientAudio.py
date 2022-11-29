@@ -21,12 +21,10 @@ class PatientAudio:
         s_full, phase = librosa.magphase(s)
         return s_full, phase
 
-    def get_full_spectrum(self):
+    def get_spectrum(self):
         s = librosa.stft(self.__audio)
-        s_full, phase = librosa.magphase(s)
-        return s_full
+        return s
 
-    def get_phase(self):
-        s = librosa.stft(self.__audio)
-        s_full, phase = librosa.magphase(s)
-        return phase
+    def get_melspectrogram(self):
+        s = librosa.feature.melspectrogram(y=self.__audio)
+        return s

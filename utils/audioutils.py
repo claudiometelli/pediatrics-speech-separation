@@ -5,6 +5,7 @@ from beans.RawAudio import RawAudio
 from config import DEFAULT_AUDIO_SAMPLERATE, DEFAULT_AUDIO_OFFSET, DEFAULT_AUDIO_DURATION
 
 
+# Load audio from file system with some settings and
 def load_audio(data_path: str, samplerate=DEFAULT_AUDIO_SAMPLERATE, offset=DEFAULT_AUDIO_OFFSET,
                audio_duration=DEFAULT_AUDIO_DURATION) -> RawAudio:
     result = RawAudio()

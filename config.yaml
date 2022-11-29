@@ -1,0 +1,20 @@
+audio_settings:
+  default_samplerate: 8000
+  default_offset: 0.0
+  default_duration: null
+
+directory_settings:
+  main_input_directory: "assets/input/"
+  main_output_directory: "assets/output/"
+  audio_directory: "audio/"
+  text_directory: "text/"
+  patient_directory: "patients/"
+  split_audio_directory: "split_audio/"
+  spectrum_audio_directory: "spectrum/"
+  waveform_audio_directory: "waveform/"
+  master_output_directory: "master/"
+
+audio_visualizer_settings:
+  waveform: True
+  spectrum: True
+  mel_spectrogram: True
