@@ -1,28 +1,34 @@
 import os
 import utils.audioutils as audioutils
-from config import ROOT_DIR, MAIN_INPUT_DIR, AUDIO_DIR, PATIENTS_DIR, SPLIT_AUDIO_DIR
-from utils.textreader import get_patient
+from config import SPLIT_AUDIO_DIR, SPLIT_ALL, SPLITTER_IDS, SPLITTER_OFFSET, SPLITTER_DURATION
+from utils.ioutils import get_patients_name, get_patients_directory_path, get_patient_name_by_id, get_patient_directory_path_by_id
 
 if __name__ == "__main__":
-    # Get patient name and directory name
-    patient = get_patient()
-    patient_directory = patient.replace(" ", "_") + "/"
-
     # Set params and read
-    offset, duration = 1, 20
+    offset, duration = SPLITTER_OFFSET, SPLITTER_DURATION
 
-    # Set input directories
-    input_file_path = patient + ".wav"
-    input_path = ROOT_DIR + MAIN_INPUT_DIR + AUDIO_DIR + PATIENTS_DIR + patient_directory + input_file_path
+    # Get patients name and path from config
+    patients = {}
+    if SPLIT_ALL:
+        patient_paths = zip(get_patients_name(), get_patients_directory_path())
+    else:
+        names = [get_patient_name_by_id(patient_id) for patient_id in SPLITTER_IDS]
+        paths = [get_patient_directory_path_by_id(patient_id) for patient_id in SPLITTER_IDS]
+        patient_paths = zip(names, paths)
 
-    # Set output directories and create if doesn't exist
-    output_dir = ROOT_DIR + MAIN_INPUT_DIR + PATIENTS_DIR + patient_directory + SPLIT_AUDIO_DIR
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    output_path = patient.replace(" ", "_") + "_" + str(offset) + "_" + str(offset + duration) + ".wav"
+    # Set input file and output file for each patient
+    patients = {patient: {
+        "input_file": f"{path}{patient}.wav",
+        "output_directory": f"{path}{SPLIT_AUDIO_DIR}",
+        "output_file": f"{path}{SPLIT_AUDIO_DIR}{patient}_{SPLITTER_OFFSET}_{offset + duration}.wav"
+    } for patient, path in patient_paths}
 
-    # Get audio
-    output_audio = audioutils.load_audio(input_path, offset=offset, audio_duration=duration)
-
-    # Set output path and write
-    audioutils.write_audio(output_path, output_audio)
+    # Create audio for each patient
+    for patient, paths in patients.items():
+        # Create output directories if doesn't exist
+        if not os.path.exists(paths.get("output_directory")):
+            os.mkdir(paths.get("output_directory"))
+        # Get audio
+        output_audio = audioutils.load_audio(paths.get("input_file"), offset=offset, audio_duration=duration)
+        # Set output path and write
+        audioutils.write_audio(paths.get("output_file"), output_audio)

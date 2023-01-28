@@ -28,3 +28,7 @@ class PatientAudio:
     def get_melspectrogram(self):
         s = librosa.feature.melspectrogram(y=self.__audio)
         return s
+
+    def get_fundamental_frequency(self):
+        ff = librosa.yin(self.__audio, fmin=65, fmax=2093)
+        return ff

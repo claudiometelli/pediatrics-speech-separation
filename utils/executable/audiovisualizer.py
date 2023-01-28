@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import librosa.display
 
 from beans.PatientAudio import PatientAudio
-from config import ROOT_DIR, MAIN_INPUT_DIR, AUDIO_DIR, PATIENTS_DIR, SPECTRUM_DIR, WAVEFORM_DIR, SHOW_WAVEFORM, \
-    SHOW_SPECTRUM, SHOW_MELSPECTROGRAM
-from utils.textreader import get_patient
+from config import ROOT_DIR, MAIN_INPUT_DIR, AUDIO_DIR, PATIENTS_DIR, WAVEFORM_DIR, SPECTRUM_DIR, FUNDAMENTAL_FREQUENCY_DIR, SHOW_WAVEFORM, SHOW_SPECTRUM, SHOW_MELSPECTROGRAM, SHOW_FUNDAMENTAL_FREQUENCY
+from utils.ioutils import get_patient_name_by_id
+
+patient_id = 0
 
 
 # Set plot on an waveform plot
@@ -46,6 +47,18 @@ def set_melspectrogram_plot(audio: PatientAudio):
     plt.colorbar()
 
 
+def set_fundamental_frequency_plot(audio: PatientAudio):
+    fund_freq = audio.get_fundamental_frequency()
+    plt.plot(
+        np.linspace(
+            1, audio.get_audio().shape[0] / audio.get_samplerate(), fund_freq.shape[0]
+        ), fund_freq
+    )
+    plt.title("Fundamental Frequency")
+    plt.xlabel("Time [s]")
+    plt.ylabel("Amplitude")
+
+
 # Save plot on a specific data path and clear the plot
 def save_plot(data_path: str):
     plt.savefig(data_path)
@@ -58,6 +71,7 @@ For every type of plot there is:
     - "directory": the directory name where plot will be saved
     - "show": a boolean variable read from the config file which indicates what plot must be saved
     - "func": the function to set te plot
+    - "file_signature": the basic name of the output file
 """
 plots = {
     "waveform": {
@@ -77,12 +91,18 @@ plots = {
         "show": SHOW_MELSPECTROGRAM,
         "func": set_melspectrogram_plot,
         "file_signature": "mel_spectrogram"
+    },
+    "fundamental_frequency": {
+        "directory": FUNDAMENTAL_FREQUENCY_DIR,
+        "show": SHOW_FUNDAMENTAL_FREQUENCY,
+        "func": set_fundamental_frequency_plot,
+        "file_signature": "fundamental_frequency"
     }
 }
 
 if __name__ == "__main__":
     # Get patient name
-    patient = get_patient()
+    patient = get_patient_name_by_id(patient_id)
     patient_directory = patient.replace(" ", "_") + "/"
 
     # Set input directories

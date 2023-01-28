@@ -14,7 +14,7 @@ class RawAudio:
         self.__audio_duration = None
 
     def load_audio(self, data_path: str, samplerate: int, offset: float, audio_duration: None or float) -> None:
-        assert os.path.exists(data_path), "File at: " + str(data_path) + " not found"
+        assert os.path.exists(data_path), f"File at: {str(data_path)} not found"
         self.__data_path = data_path
         self.__offset = offset
         self.__audio_duration = audio_duration

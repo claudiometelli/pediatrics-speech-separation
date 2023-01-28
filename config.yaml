@@ -12,9 +12,18 @@ directory_settings:
   split_audio_directory: "split_audio/"
   spectrum_audio_directory: "spectrum/"
   waveform_audio_directory: "waveform/"
-  master_output_directory: "master/"
+  fundamental_frequency_audio_directory: "fundfreq/"
+  sepformer_output_directory: "SepFormer/"
+  diarization_output_directory: "Diarization/"
 
 audio_visualizer_settings:
   waveform: True
   spectrum: True
   mel_spectrogram: True
+  fundamental_frequency: True
+
+audio_splitter_settings:
+  perform_all: False
+  perform_on_ids: [0, 1, 2, 3]
+  offset: 0
+  duration: 5
