@@ -27,3 +27,14 @@ audio_splitter_settings:
   perform_on_ids: [0, 1, 2, 3]
   offset: 0
   duration: 5
+
+separator_settings:
+  perform_all: False
+  perform_on_ids: [10]
+
+diarization_settings:
+  perform_all: False
+  perform_on_ids: [9]
+  model_output:
+    original: True
+    sizing: 1

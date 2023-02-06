@@ -1,3 +1,4 @@
+import os
 import time
 from config import ROOT_DIR, MAIN_OUTPUT_DIR, TEXT_DIR
 
@@ -15,13 +16,15 @@ def diarization_log(func):
         after_time = time.time()
         with open(log_file, "a") as f:
             f.write(
-                f"file: {args[0]},"
+                f"file: {os.path.basename(os.path.normpath(args[0]))},"
                 f"execution time: {second_to_string(after_time - before_time)} sec,"
-                f"init_speakers={kwargs['speakers']}\n"
+                f"init_speakers={0 if kwargs.get('speakers') is None else kwargs['speakers']}\n"
                 )
             for turn, _, speaker in sp_diarization.itertracks(yield_label=True):
                 res = f"start = {second_to_string(turn.start)}, stop = {second_to_string(turn.end)}, sp = {speaker}"
                 print(res)
                 f.write(res + "\n")
             f.write("--End--\n")
+        return sp_diarization
+
     return wrapper

@@ -9,6 +9,8 @@ with open(ROOT_DIR + "config.yaml") as f:
     DIRECTORY_SETTINGS = "directory_settings"
     AUDIO_VISUALIZER_SETTINGS = "audio_visualizer_settings"
     AUDIO_SPLITTER_SETTINGS = "audio_splitter_settings"
+    SEPARATOR_SETTINGS = "separator_settings"
+    DIARIZATION_SETTINGS = "diarization_settings"
 
     DEFAULT_AUDIO_SAMPLERATE = config[AUDIO_SETTINGS]["default_samplerate"]
     DEFAULT_AUDIO_OFFSET = config[AUDIO_SETTINGS]["default_offset"]
@@ -35,3 +37,11 @@ with open(ROOT_DIR + "config.yaml") as f:
     SPLITTER_IDS = tuple(config[AUDIO_SPLITTER_SETTINGS]["perform_on_ids"])
     SPLITTER_OFFSET = config[AUDIO_SPLITTER_SETTINGS]["offset"]
     SPLITTER_DURATION = config[AUDIO_SPLITTER_SETTINGS]["duration"]
+
+    SEPARATOR_ALL = config[SEPARATOR_SETTINGS]["perform_all"]
+    SEPARATOR_IDS = tuple(config[SEPARATOR_SETTINGS]["perform_on_ids"])
+
+    DIARIZATION_ALL = config[DIARIZATION_SETTINGS]["perform_all"]
+    DIARIZATION_IDS = tuple(config[DIARIZATION_SETTINGS]["perform_on_ids"])
+    DIARIZATION_MODEL_OUTPUT_ORIGINAL = config[DIARIZATION_SETTINGS]["model_output"]["original"]
+    DIARIZATION_MODEL_OUTPUT_SIZING = config[DIARIZATION_SETTINGS]["model_output"]["sizing"]
