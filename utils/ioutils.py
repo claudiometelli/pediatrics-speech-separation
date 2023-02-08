@@ -95,6 +95,10 @@ def get_patient_audio_path_by_id(patient_id: int) -> str:
 
 
 def get_token() -> str:
+    """
+    Return token from token.txt
+    :return: token string
+    """
     token = None
     with open(ROOT_DIR + MAIN_INPUT_DIR + TEXT_DIR + "token.txt") as f:
         token = f.read().replace("\n", "")

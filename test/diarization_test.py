@@ -7,10 +7,18 @@ from utils.ioutils import get_patient_name_by_id, get_patient_directory_path_by_
 
 def get_results_from_test(patient_id: int) -> dict:
     """
-    returns test results from test.txt
+    Returns test results from test.txt
+    Example:
+    result = {
+        "general_data": C:/user/pippo/secret_directory/secret_files/Mario Rossi.wav,
+        "speakers": {
+            "SPEAKER_01": [(1.02, 3.67), (6.56, 6.99), ...],
+            "SPEAKER_02": [(4.01, 5.89), (12.12, 13.13), ...]
+            }
+        }
     :param patient_id: the id of the patient
-    :return: a dict where the key is the speaker id and the value is a list of tuples
-        with start and end for every segment of the speaker
+    :return: a dict with generic data and another dict, where the keys are the speaker ids
+        and the value is a list of tuples with start and end for every segment of the speaker
     """
     result = {"general_data": get_patient_audio_path_by_id(patient_id), "speakers": {}}
     with open(f"{get_patient_directory_path_by_id(patient_id)}test.txt") as f:
@@ -45,10 +53,18 @@ def get_results_from_test(patient_id: int) -> dict:
 
 def get_results_from_log(patient_id: int) -> dict:
     """
-    returns log results from diarization_log.txt for a single patient
+    Returns log results from diarization_log.txt for a single patient
+    Example:
+    result = {
+        "general_data": C:/user/pippo/secret_directory/secret_files/Mario Rossi.wav,
+        "speakers": {
+            "SPEAKER_01": [(1.02, 3.67), (6.56, 6.99), ...],
+            "SPEAKER_02": [(4.01, 5.89), (12.12, 13.13), ...]
+            }
+        }
     :param patient_id: the id of the patient
-    :return: a dict where the key is the speaker id and the value is a list of tuples
-        with start and end for every segment of the speaker
+    :return: a dict with generic data and another dict, where the keys are the speaker ids
+        and the value is a list of tuples with start and end for every segment of the speaker
     """
     def convert_line(line: str) -> tuple:
         # Convert a single line in tuple with format: (speaker, segment_start, segment_end)
@@ -85,7 +101,19 @@ def get_results_from_log(patient_id: int) -> dict:
     return result
 
 
-def get_vad_result(diarization_test: dict, result_test: dict):
+def get_vad_result(diarization_test: dict, result_test: dict) -> None:
+    """
+    Prints and shows results from VAD quality estimation.
+    VAD result is a list of 0s and 1s in a timeline, where 0 is silence and 1 is speaking.
+    VAD accuracy: percentage of correct 0s and 1s in diarization result
+    Accuracy on speaking segments: percentage of correct 1s among all 1s
+    Wrong detecting: percentage of wrong detected 1s in among all 0s
+    :param diarization_test: a dict structured like the return value of get_results_from_log,
+        this is the result dict obtained from log file
+    :param result_test: a dict structured like the return value of get_results_from_test,
+        this is the result dict obtained from test file
+    :return: None, it shows and prints result
+    """
     assert diarization_test.get("general_data") == result_test.get("general_data")
     audio_data, samplerate = sf.read(diarization_test.get("general_data"))
     total_test_length = int((audio_data.shape[0] / samplerate) * 100)
@@ -108,7 +136,7 @@ def get_vad_result(diarization_test: dict, result_test: dict):
     overlapped_1s = np.logical_and(diarization_data, result_data)
     overlapped_0s = np.logical_or(diarization_data, result_data)
     overlapped_0s_and_1s = np.logical_not(np.logical_xor(diarization_data, result_data))
-    missed_1s = np.logical_xor(overlapped_1s, result_data)
+    # missed_1s = np.logical_xor(overlapped_1s, result_data)
     missed_0s = np.logical_xor(overlapped_0s, result_data)
     total_accuracy = np.count_nonzero(overlapped_0s_and_1s) / total_test_length
     accuracy_1s = np.count_nonzero(overlapped_1s) / np.count_nonzero(result_data)
@@ -127,6 +155,19 @@ def get_vad_result(diarization_test: dict, result_test: dict):
 
 
 def get_speaker_accuracy(diarization_test: dict, result_test: dict):
+    """
+    Prints and shows results from speaker accuracy quality estimation.
+    Speaker accuracy result is a list of 0s and 1s in a timeline, where 0s are moments when the speaker is not talking,
+    and 1s are the moments when the speaker is talking.
+    Total speaker accuracy: percentage of correct 0s and 1s in diarization result
+    Accuracy on talking segments: percentage of correct 1s among all 1s
+    Wrong detection accuracy: percentage of wrong detected 1s in among all 0s
+    :param diarization_test: a dict structured like the return value of get_results_from_log,
+        this is the result dict obtained from log file
+    :param result_test: a dict structured like the return value of get_results_from_test,
+        this is the result dict obtained from test file
+    :return: None, it shows and prints result
+    """
     assert diarization_test.get("general_data") == result_test.get("general_data")
     assert len(diarization_test.get("speakers")) == len(result_test.get("speakers"))
     audio_data, samplerate = sf.read(diarization_test.get("general_data"))
@@ -166,7 +207,9 @@ def get_speaker_accuracy(diarization_test: dict, result_test: dict):
         plt.show()
 
 
-log_res = get_results_from_log(6)
-test_res = get_results_from_test(6)
-# get_vad_result(log_res, test_res)
-get_speaker_accuracy(log_res, test_res)
+if __name__ == "__main__":
+    pat_id = 6
+    log_res = get_results_from_log(pat_id)
+    test_res = get_results_from_test(pat_id)
+    get_vad_result(log_res, test_res)
+    get_speaker_accuracy(log_res, test_res)
